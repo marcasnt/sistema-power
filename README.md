@@ -1,73 +1,86 @@
-# Welcome to your Lovable project
+# Sistema Power - Control de Competencias de Powerlifting
 
-## Project info
+Sistema de gestión y control para competencias de powerlifting en Nicaragua. Desarrollado con React, TypeScript y Supabase.
 
-**URL**: https://lovable.dev/projects/958fc3b5-de4a-49b6-b16e-3f26fb35713f
+## Características
 
-## How can I edit this code?
+- 🏋️‍♂️ Gestión completa de competencias
+- 👥 Administración de atletas
+- 📊 Control de resultados en tiempo real
+- 🎯 Seguimiento de récords y estadísticas
+- 📱 Interfaz responsive y moderna
+- 🌙 Modo oscuro/claro
 
-There are several ways of editing your application.
+## Tecnologías
 
-**Use Lovable**
+- React 18
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- Supabase
+- React Query
+- Shadcn/ui
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/958fc3b5-de4a-49b6-b16e-3f26fb35713f) and start prompting.
+## Requisitos
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js 18+
+- npm o yarn
+- Cuenta en Supabase
 
-**Use your preferred IDE**
+## Instalación
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Clonar el repositorio:
+```bash
+git clone https://github.com/tu-usuario/sistema-power.git
+cd sistema-power
 ```
 
-**Edit a file directly in GitHub**
+2. Instalar dependencias:
+```bash
+npm install
+# o
+yarn install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Configurar variables de entorno:
+```bash
+cp .env.example .env
+```
+Editar el archivo `.env` con tus credenciales de Supabase.
 
-**Use GitHub Codespaces**
+4. Iniciar el servidor de desarrollo:
+```bash
+npm run dev
+# o
+yarn dev
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Estructura del Proyecto
 
-## What technologies are used for this project?
+```
+src/
+  ├── components/     # Componentes reutilizables
+  ├── hooks/         # Hooks personalizados
+  ├── lib/           # Utilidades y configuraciones
+  ├── pages/         # Páginas de la aplicación
+  ├── styles/        # Estilos globales
+  └── types/         # Definiciones de tipos
+```
 
-This project is built with:
+## Contribución
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Fork el proyecto
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
 
-## How can I deploy this project?
+## Licencia
 
-Simply open [Lovable](https://lovable.dev/projects/958fc3b5-de4a-49b6-b16e-3f26fb35713f) and click on Share -> Publish.
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-## Can I connect a custom domain to my Lovable project?
+## Contacto
 
-Yes, you can!
+Tu Nombre - [@tutwitter](https://twitter.com/tutwitter)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Link del Proyecto: [https://github.com/tu-usuario/sistema-power](https://github.com/tu-usuario/sistema-power)

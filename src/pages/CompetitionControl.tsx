@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -6,6 +5,9 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Check, X, Play, Pause, RotateCcw } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useAthletes } from "@/hooks/useAthletes"
+import { useActiveCompetition } from "@/hooks/useCompetitions"
+import { useCompetitionAthletes } from "@/hooks/useAthletes"
 
 const CompetitionControl = () => {
   const { toast } = useToast()
@@ -14,54 +16,12 @@ const CompetitionControl = () => {
   const [currentLift, setCurrentLift] = useState("squat")
   const [currentRound, setCurrentRound] = useState(1)
   
-  const [lifters] = useState([
-    {
-      id: 1,
-      name: "Carlos Mendoza",
-      category: "83kg",
-      attempt: 1,
-      weight: 180,
-      lift: "squat",
-      status: "ready"
-    },
-    {
-      id: 2,
-      name: "Ana Rodríguez", 
-      category: "63kg",
-      attempt: 1,
-      weight: 140,
-      lift: "squat",
-      status: "waiting"
-    },
-    {
-      id: 3,
-      name: "Miguel Torres",
-      category: "93kg", 
-      attempt: 1,
-      weight: 200,
-      lift: "squat",
-      status: "waiting"
-    }
-  ])
+  // Obtener competencia activa
+  const { data: activeCompetition, isLoading: isLoadingCompetition } = useActiveCompetition()
+  // Obtener atletas inscritos a la competencia activa
+  const { data: lifters = [], isLoading: isLoadingLifters } = useCompetitionAthletes(activeCompetition?.id)
 
-  const [attempts, setAttempts] = useState([
-    {
-      lifter: "Carlos Mendoza",
-      lift: "squat",
-      attempt: 1,
-      weight: 175,
-      result: "valid",
-      timestamp: "10:15:23"
-    },
-    {
-      lifter: "Ana Rodríguez",
-      lift: "squat", 
-      attempt: 1,
-      weight: 135,
-      result: "valid",
-      timestamp: "10:12:45"
-    }
-  ])
+  const [attempts, setAttempts] = useState([])
 
   // Timer logic
   useEffect(() => {
@@ -126,6 +86,15 @@ const CompetitionControl = () => {
   }
 
   const progressPercentage = ((60 - timeLeft) / 60) * 100
+
+  if (!activeCompetition) {
+    return (
+      <div className="p-6 max-w-3xl mx-auto text-center">
+        <h2 className="text-2xl font-bold mb-4">No hay competencia en curso</h2>
+        <p className="text-muted-foreground">Inicia una competencia para gestionar los levantadores.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">

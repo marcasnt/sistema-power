@@ -122,6 +122,10 @@ export type Database = {
           id: string
           lot_number: number | null
           weigh_in_weight: number | null
+          platform_id: string | null
+          current_status: "waiting" | "current" | "completed" | null
+          current_attempt: number | null
+          current_lift: Database["public"]["Enums"]["lift_type"] | null
         }
         Insert: {
           athlete_id: string
@@ -131,6 +135,10 @@ export type Database = {
           id?: string
           lot_number?: number | null
           weigh_in_weight?: number | null
+          platform_id?: string | null
+          current_status?: "waiting" | "current" | "completed" | null
+          current_attempt?: number | null
+          current_lift?: Database["public"]["Enums"]["lift_type"] | null
         }
         Update: {
           athlete_id?: string
@@ -140,6 +148,10 @@ export type Database = {
           id?: string
           lot_number?: number | null
           weigh_in_weight?: number | null
+          platform_id?: string | null
+          current_status?: "waiting" | "current" | "completed" | null
+          current_attempt?: number | null
+          current_lift?: Database["public"]["Enums"]["lift_type"] | null
         }
         Relationships: [
           {
@@ -163,6 +175,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "competition_athletes_platform_id_fkey",
+            columns: ["platform_id"],
+            isOneToOne: false,
+            referencedRelation: "platforms",
+            referencedColumns: ["id"]
+          }
         ]
       }
       competition_results: {
@@ -267,6 +286,38 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      platforms: {
+        Row: {
+          id: string
+          name: string
+          competition_id: string | null
+          type: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          competition_id?: string | null
+          type?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          competition_id?: string | null
+          type?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platforms_competition_id_fkey",
+            columns: ["competition_id"],
+            isOneToOne: false,
+            referencedRelation: "competitions",
+            referencedColumns: ["id"]
+          }
+        ]
       }
       weight_categories: {
         Row: {

@@ -1,10 +1,13 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Calendar, Activity, Check } from "lucide-react"
+import { Users, Calendar, Activity, Check, ArrowRight } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useAthletes } from "@/hooks/useAthletes"
 import { useCompetitions } from "@/hooks/useCompetitions"
+import { StatCard } from "@/components/ui/stat-card"
+import { QuickActionCard } from "@/components/ui/quick-action-card"
+import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -21,28 +24,28 @@ const Dashboard = () => {
       value: athletes.length.toString(),
       change: athletes.length === 0 ? "Ninguno registrado" : `${athletes.length} registrados`,
       icon: Users,
-      color: "bg-blue-500"
+      color: "bg-power-info"
     },
     {
       title: "Competencias Activas",
       value: activeCompetitions.length.toString(),
       change: activeCompetitions.length === 0 ? "Ninguna activa" : `${activeCompetitions.length} en progreso`,
       icon: Calendar,
-      color: "bg-powerlifting-red"
+      color: "bg-power-primary"
     },
     {
       title: "Total de Intentos",
       value: totalAttempts.toString(),
       change: "Sin intentos registrados",
       icon: Activity,
-      color: "bg-powerlifting-gold"
+      color: "bg-power-accent"
     },
     {
       title: "Records Establecidos",
       value: totalRecords.toString(),
       change: "Sin records",
       icon: Check,
-      color: "bg-green-500"
+      color: "bg-power-success"
     }
   ]
 
@@ -51,95 +54,61 @@ const Dashboard = () => {
       title: "Nuevo Atleta",
       description: "Registrar un nuevo competidor",
       action: () => navigate("/athletes"),
-      color: "bg-blue-500"
+      color: "bg-power-info"
     },
     {
       title: "Nueva Competencia",
       description: "Organizar un nuevo evento",
       action: () => navigate("/competitions"),
-      color: "bg-powerlifting-red"
+      color: "bg-power-primary"
     },
     {
       title: "Control en Vivo",
       description: "Gestionar competencia activa",
       action: () => navigate("/competition-control"),
-      color: "bg-powerlifting-gold"
+      color: "bg-power-accent"
     },
     {
       title: "Ver Resultados",
       description: "Pantalla pública de resultados",
       action: () => navigate("/public-results"),
-      color: "bg-green-500"
+      color: "bg-power-success"
     }
   ]
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="p-6 space-y-6 max-w-7xl mx-auto"
+    >
       {/* Header */}
-      <div className="space-y-2">
+      <motion.div
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="space-y-2"
+      >
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground">
           Bienvenido al sistema de gestión de competencias de powerlifting
         </p>
-      </div>
+      </motion.div>
 
       {/* Estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <Card key={index} className="relative overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <div className={`p-2 rounded-lg ${stat.color}`}>
-                <stat.icon className="w-4 h-4 text-white" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stat.change}
-              </p>
-            </CardContent>
-          </Card>
+          <StatCard key={index} {...stat} index={index} />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Acciones Rápidas */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Acciones Rápidas</CardTitle>
-            <CardDescription>
-              Acceso directo a las funciones principales
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {quickActions.map((action, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
-                onClick={action.action}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${action.color}`} />
-                  <div>
-                    <h4 className="font-medium">{action.title}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {action.description}
-                    </p>
-                  </div>
-                </div>
-                <Button variant="ghost" size="sm">
-                  Ir
-                </Button>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+        <QuickActionCard actions={quickActions} />
 
         {/* Estado de la aplicación */}
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300">
           <CardHeader>
             <CardTitle>Estado del Sistema</CardTitle>
             <CardDescription>
@@ -147,63 +116,91 @@ const Dashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-4 border rounded-lg">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+            >
               <div className="space-y-1">
                 <h4 className="font-medium">Base de Datos</h4>
                 <p className="text-sm text-muted-foreground">
                   Conectado a Supabase
                 </p>
               </div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            </div>
-            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="w-3 h-3 rounded-full bg-power-success animate-pulse"></div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+            >
               <div className="space-y-1">
                 <h4 className="font-medium">Datos</h4>
                 <p className="text-sm text-muted-foreground">
                   {athletes.length + competitions.length > 0 ? "Con datos" : "Sin datos"}
                 </p>
               </div>
-              <div className={`w-3 h-3 rounded-full ${athletes.length + competitions.length > 0 ? "bg-green-500" : "bg-yellow-500"}`}></div>
-            </div>
-            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className={cn(
+                "w-3 h-3 rounded-full",
+                athletes.length + competitions.length > 0 ? "bg-power-success" : "bg-power-warning"
+              )}></div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+            >
               <div className="space-y-1">
                 <h4 className="font-medium">Competencias Activas</h4>
                 <p className="text-sm text-muted-foreground">
                   {activeCompetitions.length} en progreso
                 </p>
               </div>
-              <div className={`w-3 h-3 rounded-full ${activeCompetitions.length > 0 ? "bg-green-500" : "bg-gray-500"}`}></div>
-            </div>
+              <div className={cn(
+                "w-3 h-3 rounded-full",
+                activeCompetitions.length > 0 ? "bg-power-success" : "bg-muted"
+              )}></div>
+            </motion.div>
           </CardContent>
         </Card>
       </div>
 
       {/* Banner de información */}
-      <Card className="bg-gradient-to-r from-powerlifting-red/10 to-powerlifting-gold/10 border-powerlifting-red/20">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-powerlifting-red rounded-lg flex items-center justify-center">
-              <Activity className="w-6 h-6 text-white" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        <Card className="bg-gradient-to-r from-power-primary/10 to-power-accent/10 border-power-primary/20 hover:shadow-lg transition-all duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-power-primary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Activity className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-lg">Sistema PowerLifter Pro Conectado</h3>
+                <p className="text-muted-foreground">
+                  {athletes.length === 0 && competitions.length === 0 
+                    ? "Sistema conectado y listo para comenzar. Registra atletas y crea competencias." 
+                    : `Sistema operativo con ${athletes.length} atletas y ${competitions.length} competencias registradas.`
+                  }
+                </p>
+              </div>
+              <Button 
+                className="bg-power-primary hover:bg-power-primary/90 transition-colors group"
+                onClick={() => navigate(athletes.length === 0 ? "/athletes" : "/competitions")}
+              >
+                {athletes.length === 0 ? "Registrar Atletas" : "Ver Competencias"}
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-lg">Sistema PowerLifter Pro Conectado</h3>
-              <p className="text-muted-foreground">
-                {athletes.length === 0 && competitions.length === 0 
-                  ? "Sistema conectado y listo para comenzar. Registra atletas y crea competencias." 
-                  : `Sistema operativo con ${athletes.length} atletas y ${competitions.length} competencias registradas.`
-                }
-              </p>
-            </div>
-            <Button 
-              className="bg-powerlifting-red hover:bg-powerlifting-red-dark"
-              onClick={() => navigate(athletes.length === 0 ? "/athletes" : "/competitions")}
-            >
-              {athletes.length === 0 ? "Registrar Atletas" : "Ver Competencias"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   )
 }
 

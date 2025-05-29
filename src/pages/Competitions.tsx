@@ -1,18 +1,21 @@
-
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar, Plus, Users, MapPin } from "lucide-react"
+import { Calendar, Plus, Users, MapPin, Search } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { useCompetitions, useCreateCompetition } from "@/hooks/useCompetitions"
 import { useToast } from "@/hooks/use-toast"
+import { CompetitionCard } from "@/components/ui/competition-card"
+import { CompetitionStats } from "@/components/ui/competition-stats"
+import { motion } from "framer-motion"
 
 const Competitions = () => {
   const { toast } = useToast()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
   const { data: competitions = [], isLoading, error } = useCompetitions()
   const createCompetition = useCreateCompetition()
 
@@ -89,25 +92,66 @@ const Competitions = () => {
     }
   }
 
+  const stats = [
+    {
+      title: "Total Competencias",
+      value: competitions.length,
+      icon: Calendar,
+      color: "bg-power-primary",
+      index: 0
+    },
+    {
+      title: "En Progreso",
+      value: competitions.filter(comp => comp.status === "En Progreso").length,
+      icon: Calendar,
+      color: "bg-power-success",
+      index: 1
+    },
+    {
+      title: "Próximas",
+      value: competitions.filter(comp => comp.status === "Próximo").length,
+      icon: Calendar,
+      color: "bg-power-info",
+      index: 2
+    }
+  ]
+
+  const filteredCompetitions = competitions.filter(comp => 
+    comp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    comp.location.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   if (error) {
     return (
-      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="p-6 space-y-6 max-w-7xl mx-auto"
+      >
         <Card>
           <CardContent className="p-12 text-center">
-            <h3 className="text-lg font-semibold mb-2 text-red-600">Error al cargar competencias</h3>
+            <h3 className="text-lg font-semibold mb-2 text-power-error">Error al cargar competencias</h3>
             <p className="text-muted-foreground">
               Error: {error.message}
             </p>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
     )
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="p-6 space-y-6 max-w-7xl mx-auto"
+    >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <motion.div
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+      >
         <div>
           <h1 className="text-3xl font-bold text-foreground">Gestión de Competencias</h1>
           <p className="text-muted-foreground">
@@ -117,7 +161,7 @@ const Competitions = () => {
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-powerlifting-red hover:bg-powerlifting-red-dark">
+            <Button className="bg-power-primary hover:bg-power-primary/90">
               <Plus className="w-4 h-4 mr-2" />
               Nueva Competencia
             </Button>
@@ -177,7 +221,7 @@ const Competitions = () => {
               <div className="flex gap-2 pt-4">
                 <Button 
                   type="submit" 
-                  className="flex-1 bg-powerlifting-red hover:bg-powerlifting-red-dark"
+                  className="flex-1 bg-power-primary hover:bg-power-primary/90"
                   disabled={createCompetition.isPending}
                 >
                   {createCompetition.isPending ? "Creando..." : "Crear Competencia"}
@@ -189,55 +233,20 @@ const Competitions = () => {
             </form>
           </DialogContent>
         </Dialog>
-      </div>
+      </motion.div>
 
-      {/* Estadísticas rápidas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-powerlifting-red rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold">{competitions.length}</div>
-                <div className="text-sm text-muted-foreground">Total Competencias</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold">
-                  {competitions.filter(comp => comp.status === "En Progreso").length}
-                </div>
-                <div className="text-sm text-muted-foreground">En Progreso</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold">
-                  {competitions.filter(comp => comp.status === "Próximo").length}
-                </div>
-                <div className="text-sm text-muted-foreground">Próximas</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Estadísticas */}
+      <CompetitionStats stats={stats} />
+
+      {/* Búsqueda */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Input
+          placeholder="Buscar competencias..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
       </div>
 
       {/* Lista de competencias */}
@@ -247,59 +256,23 @@ const Competitions = () => {
             <div className="text-muted-foreground">Cargando competencias...</div>
           </CardContent>
         </Card>
-      ) : competitions.length === 0 ? (
+      ) : filteredCompetitions.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <Calendar className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No hay competencias registradas</h3>
-            <p className="text-muted-foreground mb-4">
-              Comienza creando tu primera competencia de powerlifting
-            </p>
-            <Button 
-              onClick={() => setIsDialogOpen(true)}
-              className="bg-powerlifting-red hover:bg-powerlifting-red-dark"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Crear Primera Competencia
-            </Button>
+            <div className="text-muted-foreground">
+              {searchQuery ? "No se encontraron competencias" : "No hay competencias registradas"}
+            </div>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {competitions.map((competition) => (
-            <Card key={competition.id} className="relative">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-xl">{competition.name}</CardTitle>
-                    <CardDescription>{competition.description}</CardDescription>
-                  </div>
-                  <Badge className={`${getStatusColor(competition.status)} text-white`}>
-                    {competition.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="w-4 h-4" />
-                  <span>{formatDate(competition.date)}</span>
-                </div>
-                
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span>{competition.location}</span>
-                </div>
-                
-                <div className="flex gap-2 pt-4">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    Ver Detalles
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    Gestionar
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCompetitions.map((competition, index) => (
+            <CompetitionCard
+              key={competition.id}
+              competition={competition}
+              onViewDetails={(id) => console.log("Ver detalles:", id)}
+              index={index}
+            />
           ))}
         </div>
       )}
@@ -320,7 +293,7 @@ const Competitions = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   )
 }
 

@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Tables, TablesInsert } from "@/integrations/supabase/types"
@@ -65,3 +64,31 @@ export const useWeightCategories = () => {
     },
   })
 }
+
+export const useCompetitionAthletes = (competitionId?: string) => {
+  return useQuery({
+    queryKey: ["competition-athletes", competitionId],
+    queryFn: async () => {
+      if (!competitionId) return [];
+      const { data, error } = await supabase
+        .from("competition_athletes")
+        .select(`
+          *,
+          athlete:athlete_id (*, weight_categories (name, gender)),
+          platform:platform_id (id, name, type)
+        `)
+        .eq("competition_id", competitionId)
+        .eq("status", "inscrito");
+      if (error) throw error;
+      // Mapear para devolver los datos del atleta y la tarima
+      return (data || []).map((row: any) => ({
+        ...row.athlete,
+        platform: row.platform,
+        status: row.current_status || "waiting",
+        currentAttempt: row.current_attempt || 1,
+        currentLift: row.current_lift || "squat"
+      }));
+    },
+    enabled: !!competitionId,
+  });
+};

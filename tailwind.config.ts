@@ -1,7 +1,7 @@
-
 import type { Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
 
-export default {
+const config = {
 	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
@@ -53,28 +53,24 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				power: {
+					primary: "#FF4D4D",
+					secondary: "#2B2B2B",
+					accent: "#FFD700",
+					success: "#4CAF50",
+					warning: "#FFA000",
+					error: "#D32F2F",
+					info: "#2196F3",
 				},
-				powerlifting: {
-					red: '#DC2626',
-					'red-dark': '#B91C1C',
-					gold: '#F59E0B',
-					'gold-dark': '#D97706',
-					'gold-light': '#FEF3C7'
-				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			fontFamily: {
+				sans: ["var(--font-sans)", ...fontFamily.sans],
+				heading: ["var(--font-heading)", ...fontFamily.sans],
 			},
 			keyframes: {
 				'accordion-down': {
@@ -103,22 +99,44 @@ export default {
 						transform: 'translateY(0)'
 					}
 				},
-				'pulse-gold': {
-					'0%, 100%': {
-						opacity: '1'
+				'fade-out': {
+					'0%': {
+						opacity: '1',
+						transform: 'translateY(0)'
 					},
-					'50%': {
-						opacity: '0.7'
+					'100%': {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					}
+				},
+				'slide-in': {
+					'0%': {
+						transform: 'translateX(-100%)'
+					},
+					'100%': {
+						transform: 'translateX(0)'
+					}
+				},
+				'slide-out': {
+					'0%': {
+						transform: 'translateX(0)'
+					},
+					'100%': {
+						transform: 'translateX(-100%)'
 					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.3s ease-out',
-				'pulse-gold': 'pulse-gold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+				'fade-in': 'fade-in 0.2s ease-out',
+				'fade-out': 'fade-out 0.2s ease-out',
+				'slide-in': 'slide-in 0.3s ease-out',
+				'slide-out': 'slide-out 0.3s ease-out'
 			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
+export default config;
