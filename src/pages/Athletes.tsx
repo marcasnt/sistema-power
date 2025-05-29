@@ -15,44 +15,7 @@ const Athletes = () => {
   const { toast } = useToast()
   const [searchTerm, setSearchTerm] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [athletes, setAthletes] = useState([
-    {
-      id: 1,
-      name: "Carlos Mendoza",
-      age: 28,
-      gender: "Masculino",
-      weight: 82.5,
-      club: "Iron Gym",
-      category: "83kg",
-      squat: 180,
-      bench: 120,
-      deadlift: 220
-    },
-    {
-      id: 2,
-      name: "Ana Rodríguez",
-      age: 24,
-      gender: "Femenino",
-      weight: 63.2,
-      club: "Power House",
-      category: "63kg",
-      squat: 140,
-      bench: 85,
-      deadlift: 170
-    },
-    {
-      id: 3,
-      name: "Miguel Torres",
-      age: 32,
-      gender: "Masculino",
-      weight: 92.8,
-      club: "Beast Mode",
-      category: "93kg",
-      squat: 200,
-      bench: 145,
-      deadlift: 250
-    }
-  ])
+  const [athletes, setAthletes] = useState<any[]>([])
 
   const [newAthlete, setNewAthlete] = useState({
     name: "",
@@ -290,50 +253,69 @@ const Athletes = () => {
       </Card>
 
       {/* Lista de atletas */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Atletas Registrados</CardTitle>
-          <CardDescription>
-            Lista completa de competidores en el sistema
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Edad/Sexo</TableHead>
-                <TableHead>Peso/Categoría</TableHead>
-                <TableHead>Club</TableHead>
-                <TableHead>Squat</TableHead>
-                <TableHead>Bench</TableHead>
-                <TableHead>Deadlift</TableHead>
-                <TableHead>Total</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredAthletes.map((athlete) => (
-                <TableRow key={athlete.id}>
-                  <TableCell className="font-medium">{athlete.name}</TableCell>
-                  <TableCell>
-                    {athlete.age} años, {athlete.gender[0]}
-                  </TableCell>
-                  <TableCell>
-                    {athlete.weight}kg / {athlete.category}
-                  </TableCell>
-                  <TableCell>{athlete.club}</TableCell>
-                  <TableCell>{athlete.squat}kg</TableCell>
-                  <TableCell>{athlete.bench}kg</TableCell>
-                  <TableCell>{athlete.deadlift}kg</TableCell>
-                  <TableCell className="font-semibold">
-                    {athlete.squat + athlete.bench + athlete.deadlift}kg
-                  </TableCell>
+      {athletes.length === 0 ? (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Users className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No hay atletas registrados</h3>
+            <p className="text-muted-foreground mb-4">
+              Comienza registrando tu primer atleta para las competencias
+            </p>
+            <Button 
+              onClick={() => setIsDialogOpen(true)}
+              className="bg-powerlifting-red hover:bg-powerlifting-red-dark"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Registrar Primer Atleta
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Atletas Registrados</CardTitle>
+            <CardDescription>
+              Lista completa de competidores en el sistema
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Edad/Sexo</TableHead>
+                  <TableHead>Peso/Categoría</TableHead>
+                  <TableHead>Club</TableHead>
+                  <TableHead>Squat</TableHead>
+                  <TableHead>Bench</TableHead>
+                  <TableHead>Deadlift</TableHead>
+                  <TableHead>Total</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {filteredAthletes.map((athlete) => (
+                  <TableRow key={athlete.id}>
+                    <TableCell className="font-medium">{athlete.name}</TableCell>
+                    <TableCell>
+                      {athlete.age} años, {athlete.gender[0]}
+                    </TableCell>
+                    <TableCell>
+                      {athlete.weight}kg / {athlete.category}
+                    </TableCell>
+                    <TableCell>{athlete.club}</TableCell>
+                    <TableCell>{athlete.squat}kg</TableCell>
+                    <TableCell>{athlete.bench}kg</TableCell>
+                    <TableCell>{athlete.deadlift}kg</TableCell>
+                    <TableCell className="font-semibold">
+                      {athlete.squat + athlete.bench + athlete.deadlift}kg
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

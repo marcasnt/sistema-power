@@ -1,7 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Users, Calendar, Activity, Check } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
@@ -11,52 +10,31 @@ const Dashboard = () => {
   const stats = [
     {
       title: "Atletas Registrados",
-      value: "124",
-      change: "+12 este mes",
+      value: "0",
+      change: "Ninguno registrado",
       icon: Users,
       color: "bg-blue-500"
     },
     {
       title: "Competencias Activas",
-      value: "3",
-      change: "2 en progreso",
+      value: "0",
+      change: "Ninguna activa",
       icon: Calendar,
       color: "bg-powerlifting-red"
     },
     {
       title: "Total de Intentos",
-      value: "1,847",
-      change: "+234 hoy",
+      value: "0",
+      change: "Sin intentos registrados",
       icon: Activity,
       color: "bg-powerlifting-gold"
     },
     {
       title: "Records Establecidos",
-      value: "23",
-      change: "7 este mes",
+      value: "0",
+      change: "Sin records",
       icon: Check,
       color: "bg-green-500"
-    }
-  ]
-
-  const recentCompetitions = [
-    {
-      name: "Nacional Juvenil 2024",
-      date: "15 Ene 2024",
-      status: "Completado",
-      athletes: 45
-    },
-    {
-      name: "Regional Centro",
-      date: "28 Ene 2024",
-      status: "En Progreso",
-      athletes: 67
-    },
-    {
-      name: "Copa Primavera",
-      date: "10 Feb 2024",
-      status: "Próximo",
-      athletes: 38
     }
   ]
 
@@ -152,41 +130,42 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Competencias Recientes */}
+        {/* Estado de la aplicación */}
         <Card>
           <CardHeader>
-            <CardTitle>Competencias Recientes</CardTitle>
+            <CardTitle>Estado del Sistema</CardTitle>
             <CardDescription>
-              Eventos programados y en curso
+              Información sobre el estado actual
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentCompetitions.map((comp, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 border rounded-lg"
-              >
-                <div className="space-y-1">
-                  <h4 className="font-medium">{comp.name}</h4>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span>{comp.date}</span>
-                    <span>•</span>
-                    <span>{comp.athletes} atletas</span>
-                  </div>
-                </div>
-                <Badge 
-                  variant={
-                    comp.status === "Completado" ? "secondary" :
-                    comp.status === "En Progreso" ? "default" : "outline"
-                  }
-                  className={
-                    comp.status === "En Progreso" ? "bg-powerlifting-red text-white" : ""
-                  }
-                >
-                  {comp.status}
-                </Badge>
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="space-y-1">
+                <h4 className="font-medium">Base de Datos</h4>
+                <p className="text-sm text-muted-foreground">
+                  Conectado a Supabase
+                </p>
               </div>
-            ))}
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="space-y-1">
+                <h4 className="font-medium">Sistema de Autenticación</h4>
+                <p className="text-sm text-muted-foreground">
+                  Listo para configurar
+                </p>
+              </div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+            </div>
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="space-y-1">
+                <h4 className="font-medium">Datos</h4>
+                <p className="text-sm text-muted-foreground">
+                  Sin datos de ejemplo
+                </p>
+              </div>
+              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -201,12 +180,15 @@ const Dashboard = () => {
             <div className="flex-1">
               <h3 className="font-semibold text-lg">Sistema PowerLifter Pro</h3>
               <p className="text-muted-foreground">
-                Gestión completa de competencias de powerlifting con control en tiempo real,
-                seguimiento de atletas y resultados automáticos.
+                Sistema limpio y listo para comenzar. Comienza registrando atletas y 
+                creando tu primera competencia de powerlifting.
               </p>
             </div>
-            <Button className="bg-powerlifting-red hover:bg-powerlifting-red-dark">
-              Ver Demo
+            <Button 
+              className="bg-powerlifting-red hover:bg-powerlifting-red-dark"
+              onClick={() => navigate("/athletes")}
+            >
+              Comenzar
             </Button>
           </div>
         </CardContent>
