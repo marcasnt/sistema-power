@@ -61,10 +61,11 @@ const menuItems = [
 ]
 
 export function AppSidebar() {
-  const { collapsed } = useSidebar()
+  const { state } = useSidebar()
   const location = useLocation()
   const { theme, setTheme } = useTheme()
   const currentPath = location.pathname
+  const collapsed = state === "collapsed"
 
   const isActive = (path: string) => currentPath === path
   const isExpanded = menuItems.some((item) => isActive(item.url))
@@ -83,7 +84,7 @@ export function AppSidebar() {
         "border-r transition-all duration-300",
         collapsed ? "w-16" : "w-64"
       )}
-      collapsible
+      collapsible="offcanvas"
     >
       <SidebarContent className="bg-card">
         {/* Logo y título */}
