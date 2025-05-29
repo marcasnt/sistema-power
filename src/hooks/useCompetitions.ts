@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
+import { Competition } from "@/integrations/supabase/types"
 import { useNotifications } from "@/hooks/use-notifications"
 
 export type CompetitionStatus = "Próximo" | "En Progreso" | "Finalizado" | "Cancelado"

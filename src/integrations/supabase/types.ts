@@ -122,10 +122,13 @@ export type Database = {
           id: string
           lot_number: number | null
           weigh_in_weight: number | null
+<<<<<<< HEAD
           platform_id: string | null
           current_status: "waiting" | "current" | "completed" | null
           current_attempt: number | null
           current_lift: Database["public"]["Enums"]["lift_type"] | null
+=======
+>>>>>>> 9b5e8b02af396b1f28e0a6c0323df126efd1bb46
         }
         Insert: {
           athlete_id: string
@@ -135,10 +138,13 @@ export type Database = {
           id?: string
           lot_number?: number | null
           weigh_in_weight?: number | null
+<<<<<<< HEAD
           platform_id?: string | null
           current_status?: "waiting" | "current" | "completed" | null
           current_attempt?: number | null
           current_lift?: Database["public"]["Enums"]["lift_type"] | null
+=======
+>>>>>>> 9b5e8b02af396b1f28e0a6c0323df126efd1bb46
         }
         Update: {
           athlete_id?: string
@@ -148,10 +154,13 @@ export type Database = {
           id?: string
           lot_number?: number | null
           weigh_in_weight?: number | null
+<<<<<<< HEAD
           platform_id?: string | null
           current_status?: "waiting" | "current" | "completed" | null
           current_attempt?: number | null
           current_lift?: Database["public"]["Enums"]["lift_type"] | null
+=======
+>>>>>>> 9b5e8b02af396b1f28e0a6c0323df126efd1bb46
         }
         Relationships: [
           {
@@ -175,6 +184,7 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+<<<<<<< HEAD
           {
             foreignKeyName: "competition_athletes_platform_id_fkey",
             columns: ["platform_id"],
@@ -182,6 +192,8 @@ export type Database = {
             referencedRelation: "platforms",
             referencedColumns: ["id"]
           }
+=======
+>>>>>>> 9b5e8b02af396b1f28e0a6c0323df126efd1bb46
         ]
       }
       competition_results: {
@@ -287,6 +299,7 @@ export type Database = {
         }
         Relationships: []
       }
+<<<<<<< HEAD
       platforms: {
         Row: {
           id: string
@@ -319,6 +332,8 @@ export type Database = {
           }
         ]
       }
+=======
+>>>>>>> 9b5e8b02af396b1f28e0a6c0323df126efd1bb46
       weight_categories: {
         Row: {
           created_at: string
