@@ -3,35 +3,43 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Users, Calendar, Activity, Check } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { useAthletes } from "@/hooks/useAthletes"
+import { useCompetitions } from "@/hooks/useCompetitions"
 
 const Dashboard = () => {
   const navigate = useNavigate()
+  const { data: athletes = [] } = useAthletes()
+  const { data: competitions = [] } = useCompetitions()
+
+  const activeCompetitions = competitions.filter(comp => comp.status === "En Progreso")
+  const totalAttempts = 0 // Will be calculated from attempts table later
+  const totalRecords = 0 // Will be calculated from records table later
 
   const stats = [
     {
       title: "Atletas Registrados",
-      value: "0",
-      change: "Ninguno registrado",
+      value: athletes.length.toString(),
+      change: athletes.length === 0 ? "Ninguno registrado" : `${athletes.length} registrados`,
       icon: Users,
       color: "bg-blue-500"
     },
     {
       title: "Competencias Activas",
-      value: "0",
-      change: "Ninguna activa",
+      value: activeCompetitions.length.toString(),
+      change: activeCompetitions.length === 0 ? "Ninguna activa" : `${activeCompetitions.length} en progreso`,
       icon: Calendar,
       color: "bg-powerlifting-red"
     },
     {
       title: "Total de Intentos",
-      value: "0",
+      value: totalAttempts.toString(),
       change: "Sin intentos registrados",
       icon: Activity,
       color: "bg-powerlifting-gold"
     },
     {
       title: "Records Establecidos",
-      value: "0",
+      value: totalRecords.toString(),
       change: "Sin records",
       icon: Check,
       color: "bg-green-500"
@@ -150,21 +158,21 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-1">
-                <h4 className="font-medium">Sistema de Autenticación</h4>
+                <h4 className="font-medium">Datos</h4>
                 <p className="text-sm text-muted-foreground">
-                  Listo para configurar
+                  {athletes.length + competitions.length > 0 ? "Con datos" : "Sin datos"}
                 </p>
               </div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div className={`w-3 h-3 rounded-full ${athletes.length + competitions.length > 0 ? "bg-green-500" : "bg-yellow-500"}`}></div>
             </div>
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-1">
-                <h4 className="font-medium">Datos</h4>
+                <h4 className="font-medium">Competencias Activas</h4>
                 <p className="text-sm text-muted-foreground">
-                  Sin datos de ejemplo
+                  {activeCompetitions.length} en progreso
                 </p>
               </div>
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+              <div className={`w-3 h-3 rounded-full ${activeCompetitions.length > 0 ? "bg-green-500" : "bg-gray-500"}`}></div>
             </div>
           </CardContent>
         </Card>
@@ -178,17 +186,19 @@ const Dashboard = () => {
               <Activity className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-lg">Sistema PowerLifter Pro</h3>
+              <h3 className="font-semibold text-lg">Sistema PowerLifter Pro Conectado</h3>
               <p className="text-muted-foreground">
-                Sistema limpio y listo para comenzar. Comienza registrando atletas y 
-                creando tu primera competencia de powerlifting.
+                {athletes.length === 0 && competitions.length === 0 
+                  ? "Sistema conectado y listo para comenzar. Registra atletas y crea competencias." 
+                  : `Sistema operativo con ${athletes.length} atletas y ${competitions.length} competencias registradas.`
+                }
               </p>
             </div>
             <Button 
               className="bg-powerlifting-red hover:bg-powerlifting-red-dark"
-              onClick={() => navigate("/athletes")}
+              onClick={() => navigate(athletes.length === 0 ? "/athletes" : "/competitions")}
             >
-              Comenzar
+              {athletes.length === 0 ? "Registrar Atletas" : "Ver Competencias"}
             </Button>
           </div>
         </CardContent>

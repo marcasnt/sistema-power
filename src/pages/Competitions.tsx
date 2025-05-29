@@ -5,13 +5,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar, Plus, Users } from "lucide-react"
+import { Calendar, Plus, Users, MapPin } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { useCompetitions, useCreateCompetition } from "@/hooks/useCompetitions"
 import { useToast } from "@/hooks/use-toast"
 
 const Competitions = () => {
   const { toast } = useToast()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [competitions, setCompetitions] = useState<any[]>([])
+  const { data: competitions = [], isLoading, error } = useCompetitions()
+  const createCompetition = useCreateCompetition()
 
   const [newCompetition, setNewCompetition] = useState({
     name: "",
@@ -20,32 +23,46 @@ const Competitions = () => {
     description: ""
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const competition = {
-      id: competitions.length + 1,
-      name: newCompetition.name,
-      date: newCompetition.date,
-      location: newCompetition.location,
-      status: "Próximo" as const,
-      athletes: 0,
-      description: newCompetition.description
+    if (!newCompetition.name || !newCompetition.date || !newCompetition.location) {
+      toast({
+        title: "Error",
+        description: "Por favor complete todos los campos obligatorios",
+        variant: "destructive",
+      })
+      return
     }
 
-    setCompetitions([...competitions, competition])
-    setNewCompetition({
-      name: "",
-      date: "",
-      location: "",
-      description: ""
-    })
-    setIsDialogOpen(false)
-    
-    toast({
-      title: "Competencia creada",
-      description: `${competition.name} ha sido programada exitosamente.`,
-    })
+    try {
+      await createCompetition.mutateAsync({
+        name: newCompetition.name,
+        date: newCompetition.date,
+        location: newCompetition.location,
+        description: newCompetition.description || null,
+        status: "Próximo"
+      })
+
+      toast({
+        title: "Competencia creada",
+        description: `${newCompetition.name} ha sido programada exitosamente.`,
+      })
+
+      setNewCompetition({
+        name: "",
+        date: "",
+        location: "",
+        description: ""
+      })
+      setIsDialogOpen(false)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Error al crear la competencia. Intente nuevamente.",
+        variant: "destructive",
+      })
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -55,6 +72,36 @@ const Competitions = () => {
       month: 'long',
       day: 'numeric'
     })
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Próximo":
+        return "bg-blue-500"
+      case "En Progreso":
+        return "bg-green-500"
+      case "Finalizado":
+        return "bg-gray-500"
+      case "Cancelado":
+        return "bg-red-500"
+      default:
+        return "bg-gray-500"
+    }
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        <Card>
+          <CardContent className="p-12 text-center">
+            <h3 className="text-lg font-semibold mb-2 text-red-600">Error al cargar competencias</h3>
+            <p className="text-muted-foreground">
+              Error: {error.message}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -85,7 +132,7 @@ const Competitions = () => {
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Nombre de la Competencia</Label>
+                <Label htmlFor="name">Nombre de la Competencia *</Label>
                 <Input
                   id="name"
                   value={newCompetition.name}
@@ -96,7 +143,7 @@ const Competitions = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="date">Fecha</Label>
+                <Label htmlFor="date">Fecha *</Label>
                 <Input
                   id="date"
                   type="date"
@@ -107,7 +154,7 @@ const Competitions = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="location">Ubicación</Label>
+                <Label htmlFor="location">Ubicación *</Label>
                 <Input
                   id="location"
                   value={newCompetition.location}
@@ -128,8 +175,12 @@ const Competitions = () => {
               </div>
 
               <div className="flex gap-2 pt-4">
-                <Button type="submit" className="flex-1 bg-powerlifting-red hover:bg-powerlifting-red-dark">
-                  Crear Competencia
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-powerlifting-red hover:bg-powerlifting-red-dark"
+                  disabled={createCompetition.isPending}
+                >
+                  {createCompetition.isPending ? "Creando..." : "Crear Competencia"}
                 </Button>
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                   Cancelar
@@ -159,22 +210,6 @@ const Competitions = () => {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-powerlifting-gold rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold">
-                  {competitions.reduce((sum, comp) => sum + comp.athletes, 0)}
-                </div>
-                <div className="text-sm text-muted-foreground">Atletas Participando</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
                 <Calendar className="w-6 h-6 text-white" />
               </div>
@@ -187,10 +222,32 @@ const Competitions = () => {
             </div>
           </CardContent>
         </Card>
+        
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold">
+                  {competitions.filter(comp => comp.status === "Próximo").length}
+                </div>
+                <div className="text-sm text-muted-foreground">Próximas</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Lista de competencias */}
-      {competitions.length === 0 ? (
+      {isLoading ? (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <div className="text-muted-foreground">Cargando competencias...</div>
+          </CardContent>
+        </Card>
+      ) : competitions.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
             <Calendar className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
@@ -217,12 +274,20 @@ const Competitions = () => {
                     <CardTitle className="text-xl">{competition.name}</CardTitle>
                     <CardDescription>{competition.description}</CardDescription>
                   </div>
+                  <Badge className={`${getStatusColor(competition.status)} text-white`}>
+                    {competition.status}
+                  </Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
                   <span>{formatDate(competition.date)}</span>
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPin className="w-4 h-4" />
+                  <span>{competition.location}</span>
                 </div>
                 
                 <div className="flex gap-2 pt-4">
@@ -247,10 +312,9 @@ const Competitions = () => {
               <Calendar className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-lg">Sistema Listo</h3>
+              <h3 className="font-semibold text-lg">Sistema Conectado</h3>
               <p className="text-muted-foreground">
-                La aplicación está configurada y lista para gestionar competencias.
-                Conecta tu base de datos para persistir la información.
+                La aplicación está conectada a Supabase y lista para gestionar competencias reales.
               </p>
             </div>
           </div>

@@ -9,7 +9,292 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      athletes: {
+        Row: {
+          age: number
+          bench_opener: number | null
+          category_id: string | null
+          club: string
+          created_at: string
+          deadlift_opener: number | null
+          gender: Database["public"]["Enums"]["gender_type"]
+          id: string
+          name: string
+          squat_opener: number | null
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          age: number
+          bench_opener?: number | null
+          category_id?: string | null
+          club: string
+          created_at?: string
+          deadlift_opener?: number | null
+          gender: Database["public"]["Enums"]["gender_type"]
+          id?: string
+          name: string
+          squat_opener?: number | null
+          updated_at?: string
+          weight: number
+        }
+        Update: {
+          age?: number
+          bench_opener?: number | null
+          category_id?: string | null
+          club?: string
+          created_at?: string
+          deadlift_opener?: number | null
+          gender?: Database["public"]["Enums"]["gender_type"]
+          id?: string
+          name?: string
+          squat_opener?: number | null
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "athletes_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "weight_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attempts: {
+        Row: {
+          athlete_id: string
+          attempt_number: number
+          competition_id: string
+          created_at: string
+          id: string
+          lift_type: Database["public"]["Enums"]["lift_type"]
+          result: Database["public"]["Enums"]["attempt_result"]
+          timestamp: string | null
+          weight: number
+        }
+        Insert: {
+          athlete_id: string
+          attempt_number: number
+          competition_id: string
+          created_at?: string
+          id?: string
+          lift_type: Database["public"]["Enums"]["lift_type"]
+          result?: Database["public"]["Enums"]["attempt_result"]
+          timestamp?: string | null
+          weight: number
+        }
+        Update: {
+          athlete_id?: string
+          attempt_number?: number
+          competition_id?: string
+          created_at?: string
+          id?: string
+          lift_type?: Database["public"]["Enums"]["lift_type"]
+          result?: Database["public"]["Enums"]["attempt_result"]
+          timestamp?: string | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attempts_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "athletes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attempts_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_athletes: {
+        Row: {
+          athlete_id: string
+          category_id: string | null
+          competition_id: string
+          created_at: string
+          id: string
+          lot_number: number | null
+          weigh_in_weight: number | null
+        }
+        Insert: {
+          athlete_id: string
+          category_id?: string | null
+          competition_id: string
+          created_at?: string
+          id?: string
+          lot_number?: number | null
+          weigh_in_weight?: number | null
+        }
+        Update: {
+          athlete_id?: string
+          category_id?: string | null
+          competition_id?: string
+          created_at?: string
+          id?: string
+          lot_number?: number | null
+          weigh_in_weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_athletes_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "athletes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_athletes_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "weight_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_athletes_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_results: {
+        Row: {
+          athlete_id: string
+          best_bench: number | null
+          best_deadlift: number | null
+          best_squat: number | null
+          category_id: string
+          competition_id: string
+          created_at: string
+          id: string
+          position: number | null
+          total: number | null
+          updated_at: string
+        }
+        Insert: {
+          athlete_id: string
+          best_bench?: number | null
+          best_deadlift?: number | null
+          best_squat?: number | null
+          category_id: string
+          competition_id: string
+          created_at?: string
+          id?: string
+          position?: number | null
+          total?: number | null
+          updated_at?: string
+        }
+        Update: {
+          athlete_id?: string
+          best_bench?: number | null
+          best_deadlift?: number | null
+          best_squat?: number | null
+          category_id?: string
+          competition_id?: string
+          created_at?: string
+          id?: string
+          position?: number | null
+          total?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_results_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "athletes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_results_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "weight_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_results_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitions: {
+        Row: {
+          created_at: string
+          current_lift: Database["public"]["Enums"]["lift_type"] | null
+          current_round: number | null
+          date: string
+          description: string | null
+          id: string
+          location: string
+          name: string
+          status: Database["public"]["Enums"]["competition_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_lift?: Database["public"]["Enums"]["lift_type"] | null
+          current_round?: number | null
+          date: string
+          description?: string | null
+          id?: string
+          location: string
+          name: string
+          status?: Database["public"]["Enums"]["competition_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_lift?: Database["public"]["Enums"]["lift_type"] | null
+          current_round?: number | null
+          date?: string
+          description?: string | null
+          id?: string
+          location?: string
+          name?: string
+          status?: Database["public"]["Enums"]["competition_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      weight_categories: {
+        Row: {
+          created_at: string
+          gender: Database["public"]["Enums"]["gender_type"]
+          id: string
+          max_weight: number | null
+          min_weight: number | null
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          gender: Database["public"]["Enums"]["gender_type"]
+          id?: string
+          max_weight?: number | null
+          min_weight?: number | null
+          name: string
+        }
+        Update: {
+          created_at?: string
+          gender?: Database["public"]["Enums"]["gender_type"]
+          id?: string
+          max_weight?: number | null
+          min_weight?: number | null
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +303,10 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      attempt_result: "valid" | "invalid" | "pending"
+      competition_status: "Próximo" | "En Progreso" | "Finalizado" | "Cancelado"
+      gender_type: "Masculino" | "Femenino"
+      lift_type: "squat" | "bench" | "deadlift"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +421,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      attempt_result: ["valid", "invalid", "pending"],
+      competition_status: ["Próximo", "En Progreso", "Finalizado", "Cancelado"],
+      gender_type: ["Masculino", "Femenino"],
+      lift_type: ["squat", "bench", "deadlift"],
+    },
   },
 } as const
